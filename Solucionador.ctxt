@@ -1,0 +1,5 @@
+#BlueJ class context
+comment0.target=Solucionador
+comment1.params=nodoInicial\ esSolucion\ getCota\ getValor\ explorarNodo
+comment1.target=java.lang.Object\ ramificacionYPoda(java.lang.Object,\ java.util.function.Function,\ java.util.function.Function,\ java.util.function.Function,\ java.util.function.Function)
+numComments=2
