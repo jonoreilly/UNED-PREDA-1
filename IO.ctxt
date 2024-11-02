@@ -1,10 +1,17 @@
 #BlueJ class context
 comment0.target=IO
-comment0.text=\n\ Write\ a\ description\ of\ class\ IO\ here.\n\n\ @author\ (your\ name)\n\ @version\ (a\ version\ number\ or\ a\ date)\n
 comment1.params=
-comment1.target=IO()
-comment1.text=\n\ Constructor\ for\ objects\ of\ class\ IO\n
-comment2.params=y
-comment2.target=int\ sampleMethod(int)
-comment2.text=\n\ An\ example\ of\ a\ method\ -\ replace\ this\ comment\ with\ your\ own\n\n\ @param\ \ y\ \ a\ sample\ parameter\ for\ a\ method\n\ @return\ \ \ \ the\ sum\ of\ x\ and\ y\n
-numComments=3
+comment1.target=void\ mostrarAyuda()
+comment2.params=nombre
+comment2.target=java.util.List\ leerArchivoCostes(java.lang.String)
+comment3.params=
+comment3.target=java.util.List\ leerCostesPorConsola()
+comment4.params=mensaje
+comment4.target=java.lang.Integer\ leerNumero(java.lang.String)
+comment5.params=nombre\ mapaAgenteTarea
+comment5.target=void\ escribirResultado(java.lang.String,\ java.util.List)
+comment6.params=mapaAgenteTarea
+comment6.target=void\ mostrarResultadoPorPantalla(java.util.List)
+comment7.params=mensaje
+comment7.target=void\ traza(java.lang.String)
+numComments=8

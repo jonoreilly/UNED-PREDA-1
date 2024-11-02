@@ -7,6 +7,16 @@ public class DistribuidorDeTareas {
         
     public static Nodo distribuirTareas(List<List<Integer>> mapaAgenteTareaCoste) throws Exception {
         
+        IO.traza("");
+        
+        IO.traza("Distributyendo las siguientes tareas:");
+        
+        for(List<Integer> fila : mapaAgenteTareaCoste) {
+        
+            IO.traza(fila.toString());
+        
+        }
+        
         if (mapaAgenteTareaCoste.size() == 0 || mapaAgenteTareaCoste.stream().anyMatch(x -> x.size() == 0)) {
             
             throw new Exception("Entrada invalida");

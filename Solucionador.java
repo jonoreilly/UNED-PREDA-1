@@ -27,8 +27,8 @@ public class Solucionador {
         
         while (pila.size() > 0) {
             
-            System.out.println(pila);
-            
+            IO.traza(pila.toString());
+                
             Nodo nodo = pila.poll();
             
             if (esSolucion.apply(nodo)) {

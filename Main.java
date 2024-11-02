@@ -1,42 +1,52 @@
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Main {
 
-    public static void main() throws Exception {
+    public static void main(String[] args) throws Exception {
         
-        List<List<Integer>> mapaAgenteTareaCoste = new ArrayList<>();
+        List<String> argumentos = Arrays.asList(args);
         
-        mapaAgenteTareaCoste.add(new ArrayList<>());
-        mapaAgenteTareaCoste.add(new ArrayList<>());
-        mapaAgenteTareaCoste.add(new ArrayList<>());
-        mapaAgenteTareaCoste.add(new ArrayList<>());
+        List<String> opciones = Arrays.asList("-h", "-t");
         
-        mapaAgenteTareaCoste.get(0).add(11);
-        mapaAgenteTareaCoste.get(0).add(12);
-        mapaAgenteTareaCoste.get(0).add(18);
-        mapaAgenteTareaCoste.get(0).add(40);
+        List<String> ficheros = argumentos.stream().filter(s -> !opciones.contains(s)).toList();
         
-        mapaAgenteTareaCoste.get(1).add(14);
-        mapaAgenteTareaCoste.get(1).add(15);
-        mapaAgenteTareaCoste.get(1).add(13);
-        mapaAgenteTareaCoste.get(1).add(22);
+        if (argumentos.contains("-h")) {
+            
+            IO.mostrarAyuda();
+            
+            return;
+            
+        }
         
-        mapaAgenteTareaCoste.get(2).add(11);
-        mapaAgenteTareaCoste.get(2).add(17);
-        mapaAgenteTareaCoste.get(2).add(19);
-        mapaAgenteTareaCoste.get(2).add(23);
+        IO.TRAZA = argumentos.contains("-t");
         
-        mapaAgenteTareaCoste.get(3).add(17);
-        mapaAgenteTareaCoste.get(3).add(14);
-        mapaAgenteTareaCoste.get(3).add(20);
-        mapaAgenteTareaCoste.get(3).add(28);
+        List<List<Integer>> mapaAgenteTareaCoste;
+        
+        if (ficheros.size() > 0) {
+            
+            String ficheroEntrada = ficheros.get(0);
+            
+            mapaAgenteTareaCoste = IO.leerArchivoCostes(ficheroEntrada);
+            
+        } else {
+            
+            mapaAgenteTareaCoste = IO.leerCostesPorConsola();
+            
+        }
         
         Nodo solucion = DistribuidorDeTareas.distribuirTareas(mapaAgenteTareaCoste);
         
-        System.out.println("mapaAgenteTareaCoste: " + mapaAgenteTareaCoste);
-        
-        System.out.println("solucion: " + solucion);
+        if (ficheros.size() > 1) {
+            
+            IO.escribirResultado(ficheros.get(1), solucion.getMapaAgenteTarea());
+            
+        } else {
+            
+            IO.mostrarResultadoPorPantalla(solucion.getMapaAgenteTarea());
+            
+        }
         
     }
     
