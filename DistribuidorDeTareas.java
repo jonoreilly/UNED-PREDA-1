@@ -4,56 +4,8 @@ import java.util.ArrayList;
 import java.util.stream.IntStream;
 
 public class DistribuidorDeTareas {
-    
-    private static class Nodo {
         
-        private List<Integer> mapaAgenteTarea = new ArrayList<>();
-        
-        private Integer cota;
-
-        private Integer valor;
-        
-        private Boolean esSolucion;
-        
-        public Nodo(List<Integer> mapaAgenteTarea, Integer cota, Integer valor, Boolean esSolucion) {
-            
-            this.mapaAgenteTarea.addAll(mapaAgenteTarea);
-            
-            this.cota = cota;
-            
-            this.valor = valor;
-            
-            this.esSolucion = esSolucion;
-            
-        }
-        
-        public List<Integer> getMapaAgenteTarea() {
-            
-            return new ArrayList<>(mapaAgenteTarea);
-            
-        }
-        
-        public Integer getCota() {
-            
-            return this.cota;
-            
-        }
-        
-        public Integer getValor() {
-            
-            return this.valor;
-            
-        }
-        
-        public Boolean getEsSolucion() {
-            
-            return this.esSolucion;
-            
-        }
-        
-    }
-    
-    public static void distribuirTareas(List<List<Integer>> mapaAgenteTareaCoste) throws Exception {
+    public static Nodo distribuirTareas(List<List<Integer>> mapaAgenteTareaCoste) throws Exception {
         
         if (mapaAgenteTareaCoste.size() == 0 || mapaAgenteTareaCoste.stream().anyMatch(x -> x.size() == 0)) {
             
@@ -61,9 +13,7 @@ public class DistribuidorDeTareas {
             
         }
         
-        List<Integer> agentes = IntStream.range(0, mapaAgenteTareaCoste.size()).boxed().toList();
-        
-        List<Integer> tareas = IntStream.range(0, mapaAgenteTareaCoste.get(0).size()).boxed().toList();
+        DatosPrecalculados datosPrecalculados = new DatosPrecalculados(mapaAgenteTareaCoste);
         
         Nodo nodoInicial = new Nodo(new ArrayList<Integer>(), 0, 0, false);
         
@@ -73,7 +23,7 @@ public class DistribuidorDeTareas {
         
         Function<Nodo, Integer> getValor = (nodo) -> nodo.getValor();
         
-        Function<Nodo, List<Nodo>> explorarNodo = (nodo) -> getExplorarNodos(mapaAgenteTareaCoste, nodo);
+        Function<Nodo, List<Nodo>> explorarNodo = (nodo) -> getExplorarNodos(datosPrecalculados, nodo);
         
         Nodo solucion = Solucionador.ramificacionYPoda(
             nodoInicial,
@@ -83,15 +33,20 @@ public class DistribuidorDeTareas {
             explorarNodo
             );
             
-        System.out.println(solucion);
+        return solucion;
         
     }
     
-    private static List<Nodo> getExplorarNodos(List<List<Integer>> mapaAgenteTareaCoste, Nodo nodo) {
     
-        List<Integer> agentes = IntStream.range(0, mapaAgenteTareaCoste.size()).boxed().toList();
+    private static List<Nodo> getExplorarNodos(DatosPrecalculados datosPrecalculados, Nodo nodo) {
         
         List<Integer> nodoMapaAgenteTarea = nodo.getMapaAgenteTarea();
+        
+        List<Integer> agentes = datosPrecalculados.getAgentes();
+        
+        List<Integer> tareas = datosPrecalculados.getAgentes();
+        
+        List<List<Integer>> mapaAgenteTareaCoste = datosPrecalculados.getMapaAgenteTareaCoste();
         
         if (nodo.getEsSolucion() || nodoMapaAgenteTarea.size() >= agentes.size()) {
             
@@ -103,9 +58,11 @@ public class DistribuidorDeTareas {
         
         List<Integer> mapaTareaCoste = mapaAgenteTareaCoste.get(proximoAgente);
         
-        List<Nodo> nodosNuevos = new ArrayList<>();
+        List<Integer> tareasDisponibles = tareas.stream().filter(t -> !nodoMapaAgenteTarea.contains(t)).toList();    
         
-        for (int tarea = 0; tarea < mapaTareaCoste.size(); tarea++) {
+        List<Nodo> nodosNuevos = new ArrayList<>();    
+        
+        for (Integer tarea : tareasDisponibles) {
             
             Integer coste = mapaTareaCoste.get(tarea);
             
@@ -113,9 +70,9 @@ public class DistribuidorDeTareas {
             
             nuevoNodoMapaAgenteTarea.add(tarea);
             
-            Integer nuevoNodoCota = getCotaOptimista(mapaAgenteTareaCoste, nuevoNodoMapaAgenteTarea);
+            Integer nuevoNodoCota = getCotaOptimista(datosPrecalculados, nuevoNodoMapaAgenteTarea);
             
-            Integer nuevoNodoValor = getCoste(mapaAgenteTareaCoste, nuevoNodoMapaAgenteTarea);
+            Integer nuevoNodoValor = getCoste(datosPrecalculados, nuevoNodoMapaAgenteTarea);
             
             boolean nuevoNodoEsSolucion = nuevoNodoMapaAgenteTarea.size() == agentes.size();
             
@@ -127,7 +84,9 @@ public class DistribuidorDeTareas {
         
     }
     
-    private static Integer getCoste(List<List<Integer>> mapaAgenteTareaCoste, List<Integer> mapaAgenteTarea) {
+    private static Integer getCoste(DatosPrecalculados datosPrecalculados, List<Integer> mapaAgenteTarea) {
+        
+        List<List<Integer>> mapaAgenteTareaCoste = datosPrecalculados.getMapaAgenteTareaCoste();
         
         Integer coste = 0;
         
@@ -143,39 +102,21 @@ public class DistribuidorDeTareas {
         
     }
     
-    private static Integer getCotaOptimista(List<List<Integer>> mapaAgenteTareaCoste, List<Integer> mapaAgenteTarea) {
+    private static Integer getCotaOptimista(DatosPrecalculados datosPrecalculados, List<Integer> mapaAgenteTarea) {
         
-        Integer coste = getCoste(mapaAgenteTareaCoste, mapaAgenteTarea);
+        List<Integer> mapaAgenteMinimoCoste = datosPrecalculados.getMapaAgenteMinimoCoste();
+        
+        List<Integer> agentes = datosPrecalculados.getAgentes();
+        
+        List<Integer> agentesLibres = agentes.subList(mapaAgenteTarea.size(), agentes.size());
+        
+        Integer coste = getCoste(datosPrecalculados, mapaAgenteTarea);
         
         Integer minimoRestante = 0;
         
-        for (int agente = mapaAgenteTarea.size(); agente < mapaAgenteTareaCoste.size(); agente++) {
+        for (Integer agente : agentesLibres) {
             
-            Integer minimoDelAgente = null;    
-            
-            for (int tarea = 0; tarea < mapaAgenteTareaCoste.get(agente).size(); tarea++) {
-                
-                if (mapaAgenteTarea.contains(tarea)) {
-                    
-                    continue;
-                    
-                }
-                
-                Integer costeDeLaTarea = mapaAgenteTareaCoste.get(agente).get(tarea);
-                
-                if (minimoDelAgente == null || minimoDelAgente > costeDeLaTarea) {
-                    
-                    minimoDelAgente = costeDeLaTarea;
-                    
-                }
-                    
-            }
-            
-            if (minimoDelAgente != null) {
-                
-                minimoRestante += minimoDelAgente;
-            
-            }
+            minimoRestante += mapaAgenteMinimoCoste.get(agente);
             
         }
         

@@ -1,0 +1,15 @@
+#BlueJ class context
+comment0.target=Nodo
+comment1.params=mapaAgenteTarea\ cota\ valor\ esSolucion
+comment1.target=Nodo(java.util.List,\ java.lang.Integer,\ java.lang.Integer,\ java.lang.Boolean)
+comment2.params=
+comment2.target=java.util.List\ getMapaAgenteTarea()
+comment3.params=
+comment3.target=java.lang.Integer\ getCota()
+comment4.params=
+comment4.target=java.lang.Integer\ getValor()
+comment5.params=
+comment5.target=java.lang.Boolean\ getEsSolucion()
+comment6.params=
+comment6.target=java.lang.String\ toString()
+numComments=7

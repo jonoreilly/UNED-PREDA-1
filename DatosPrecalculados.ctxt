@@ -1,0 +1,13 @@
+#BlueJ class context
+comment0.target=DatosPrecalculados
+comment1.params=mapaAgenteTareaCoste
+comment1.target=DatosPrecalculados(java.util.List)
+comment2.params=
+comment2.target=java.util.List\ getMapaAgenteTareaCoste()
+comment3.params=
+comment3.target=java.util.List\ getAgentes()
+comment4.params=
+comment4.target=java.util.List\ getTareas()
+comment5.params=
+comment5.target=java.util.List\ getMapaAgenteMinimoCoste()
+numComments=6
