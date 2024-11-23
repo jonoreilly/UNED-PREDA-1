@@ -1,0 +1,13 @@
+#BlueJ class context
+comment0.target=SolucionadorRamificacionYPoda
+comment1.params=mapaAgenteTareaCoste
+comment1.target=java.util.List\ getSolucion(java.util.List)
+comment2.params=datosPrecalculados
+comment2.target=Nodo\ obtenerNodoSolucion(DatosPrecalculados)
+comment3.params=datosPrecalculados\ nodo
+comment3.target=java.util.List\ explorarNodo(DatosPrecalculados,\ Nodo)
+comment4.params=datosPrecalculados\ mapaAgenteTarea
+comment4.target=java.lang.Integer\ getCoste(DatosPrecalculados,\ java.util.List)
+comment5.params=datosPrecalculados\ mapaAgenteTarea
+comment5.target=java.lang.Integer\ getCotaOptimista(DatosPrecalculados,\ java.util.List)
+numComments=6

@@ -36,17 +36,24 @@ public class Main {
             
         }
         
-        Nodo solucion = DistribuidorDeTareas.distribuirTareas(mapaAgenteTareaCoste);
+        List<Integer> solucionRamificacionYPoda = SolucionadorRamificacionYPoda.getSolucion(mapaAgenteTareaCoste);
         
+        List<Integer> solucionFuerzaBruta = SolucionadorFuerzaBruta.getSolucion(mapaAgenteTareaCoste);
+        
+        System.out.println("RamificacionYPoda: " + solucionRamificacionYPoda);
+        System.out.println("FuerzaBruta: " + solucionFuerzaBruta);
+        
+        /*
         if (ficheros.size() > 1) {
             
-            IO.escribirResultado(ficheros.get(1), solucion.getMapaAgenteTarea());
+            IO.escribirResultado(ficheros.get(1), solucion);
             
         } else {
             
-            IO.mostrarResultadoPorPantalla(solucion.getMapaAgenteTarea());
+            IO.mostrarResultadoPorPantalla(solucion);
             
         }
+        */
         
     }
     

@@ -1,12 +1,11 @@
 import java.util.List;
-import java.util.function.Function;
+import java.util.PriorityQueue;
 import java.util.ArrayList;
-import java.util.stream.IntStream;
 
-public class DistribuidorDeTareas {
-        
-    public static Nodo distribuirTareas(List<List<Integer>> mapaAgenteTareaCoste) throws Exception {
-        
+public class SolucionadorRamificacionYPoda {
+    
+    public static List<Integer> getSolucion(List<List<Integer>> mapaAgenteTareaCoste) throws Exception {
+    
         IO.traza("");
         
         IO.traza("Distributyendo las siguientes tareas:");
@@ -25,30 +24,47 @@ public class DistribuidorDeTareas {
         
         DatosPrecalculados datosPrecalculados = new DatosPrecalculados(mapaAgenteTareaCoste);
         
-        Nodo nodoInicial = new Nodo(new ArrayList<Integer>(), 0, 0, false);
+        Nodo solucion = obtenerNodoSolucion(datosPrecalculados);
         
-        Function<Nodo, Boolean> esSolucion = (nodo) -> nodo.getEsSolucion();
-        
-        Function<Nodo, Integer> getCota = (nodo) -> nodo.getCota();
-        
-        Function<Nodo, Integer> getValor = (nodo) -> nodo.getValor();
-        
-        Function<Nodo, List<Nodo>> explorarNodo = (nodo) -> getExplorarNodos(datosPrecalculados, nodo);
-        
-        Nodo solucion = Solucionador.ramificacionYPoda(
-            nodoInicial,
-            esSolucion,
-            getCota,
-            getValor,
-            explorarNodo
-            );
-            
-        return solucion;
+        return solucion.getMapaAgenteTarea();
         
     }
     
+    private static Nodo obtenerNodoSolucion(DatosPrecalculados datosPrecalculados) {
+        
+        PriorityQueue<Nodo> pila = new PriorityQueue<Nodo>((Nodo a, Nodo b) -> {
+        
+            Integer valorA = a.getEsSolucion() ? a.getValor() : a.getCota();
+            
+            Integer valorB = b.getEsSolucion() ? b.getValor() : b.getCota();
+            
+            return valorA - valorB;
+            
+        });
+        
+        Nodo nodoInicial = new Nodo(new ArrayList<Integer>(), 0, 0, false);
+        
+        pila.add(nodoInicial);
+        
+        while (pila.size() > 0) {
+                
+            Nodo nodo = pila.poll();
+            
+            if (nodo.getEsSolucion()) {
+                
+                return nodo;
+                
+            }
+            
+            pila.addAll(explorarNodo(datosPrecalculados, nodo));
+            
+        }
+        
+        return null;
+        
+    }
     
-    private static List<Nodo> getExplorarNodos(DatosPrecalculados datosPrecalculados, Nodo nodo) {
+    private static List<Nodo> explorarNodo(DatosPrecalculados datosPrecalculados, Nodo nodo) {
         
         List<Integer> nodoMapaAgenteTarea = nodo.getMapaAgenteTarea();
         
