@@ -36,14 +36,8 @@ public class Main {
             
         }
         
-        List<Integer> solucionRamificacionYPoda = SolucionadorRamificacionYPoda.getSolucion(mapaAgenteTareaCoste);
+        List<Integer> solucion = SolucionadorRamificacionYPoda.getSolucion(mapaAgenteTareaCoste);
         
-        List<Integer> solucionFuerzaBruta = SolucionadorFuerzaBruta.getSolucion(mapaAgenteTareaCoste);
-        
-        System.out.println("RamificacionYPoda: " + solucionRamificacionYPoda);
-        System.out.println("FuerzaBruta: " + solucionFuerzaBruta);
-        
-        /*
         if (ficheros.size() > 1) {
             
             IO.escribirResultado(ficheros.get(1), solucion);
@@ -53,7 +47,6 @@ public class Main {
             IO.mostrarResultadoPorPantalla(solucion);
             
         }
-        */
         
     }
     

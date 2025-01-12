@@ -1,6 +1,8 @@
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.OptionalInt;
 
 public class SolucionadorRamificacionYPoda {
     
@@ -32,31 +34,55 @@ public class SolucionadorRamificacionYPoda {
     
     private static Nodo obtenerNodoSolucion(DatosPrecalculados datosPrecalculados) {
         
-        PriorityQueue<Nodo> pila = new PriorityQueue<Nodo>((Nodo a, Nodo b) -> {
-        
-            Integer valorA = a.getEsSolucion() ? a.getValor() : a.getCota();
-            
-            Integer valorB = b.getEsSolucion() ? b.getValor() : b.getCota();
-            
-            return valorA - valorB;
-            
-        });
+        PriorityQueue<Nodo> pila = new PriorityQueue<Nodo>((Nodo a, Nodo b) -> a.getCota() - b.getCota());
         
         Nodo nodoInicial = new Nodo(new ArrayList<Integer>(), 0, 0, false);
+        
+        Integer cotaSolucionMejor = obtenerCotaSolucionDiagonal(datosPrecalculados);
         
         pila.add(nodoInicial);
         
         while (pila.size() > 0) {
-                
-            Nodo nodo = pila.poll();
             
+            IO.traza("pila: (" + pila.size()+ ") " + pila);
+            
+            Nodo nodo = pila.poll();
+                        
             if (nodo.getEsSolucion()) {
+                
+                IO.traza("Solucion encontrada: " + nodo);
                 
                 return nodo;
                 
             }
             
-            pila.addAll(explorarNodo(datosPrecalculados, nodo));
+            List<Nodo> nuevosNodos = explorarNodo(datosPrecalculados, nodo, cotaSolucionMejor);
+            
+            IO.traza("Explorando nodo " + nodo + " -> (" + nuevosNodos.size() + ") " + nuevosNodos);
+            
+            pila.addAll(nuevosNodos);
+            
+            List<Integer> nuevasCotasSolucion = nuevosNodos
+                .stream()
+                .filter(n -> n.getEsSolucion())
+                .map(n -> n.getCota())
+                .toList();
+            
+            if (nuevasCotasSolucion.size() > 0) {
+                
+                Integer nuevaCotaSolucionMejor = Collections.min(nuevasCotasSolucion);
+                
+                if (nuevaCotaSolucionMejor < cotaSolucionMejor) {
+                
+                    cotaSolucionMejor = nuevaCotaSolucionMejor;
+                    
+                    IO.traza("Podando pila por solucion: " + nuevaCotaSolucionMejor);
+                    
+                    pila.removeIf(n -> n.getCota() > nuevaCotaSolucionMejor);
+                    
+                }
+                
+            }
             
         }
         
@@ -64,7 +90,23 @@ public class SolucionadorRamificacionYPoda {
         
     }
     
-    private static List<Nodo> explorarNodo(DatosPrecalculados datosPrecalculados, Nodo nodo) {
+    private static Integer obtenerCotaSolucionDiagonal(DatosPrecalculados datosPrecalculados) {
+        
+        List<List<Integer>> mapaAgenteTareaCoste = datosPrecalculados.getMapaAgenteTareaCoste();
+        
+        Integer coste = 0; 
+        
+        for (int i = 0; i < mapaAgenteTareaCoste.size(); i++) {
+            
+            coste += mapaAgenteTareaCoste.get(i).get(i);
+            
+        }
+        
+        return coste;
+        
+    }
+    
+    private static List<Nodo> explorarNodo(DatosPrecalculados datosPrecalculados, Nodo nodo, Integer cotaSolucionMejor) {
         
         List<Integer> nodoMapaAgenteTarea = nodo.getMapaAgenteTarea();
         
@@ -97,6 +139,14 @@ public class SolucionadorRamificacionYPoda {
             nuevoNodoMapaAgenteTarea.add(tarea);
             
             Integer nuevoNodoCota = getCotaOptimista(datosPrecalculados, nuevoNodoMapaAgenteTarea);
+            
+            if (nuevoNodoCota > cotaSolucionMejor) {
+                
+                IO.traza("Podando nodo nuevo: cotaSolucionMejor = " + cotaSolucionMejor + ", nuevoNodoCota = " + nuevoNodoCota);
+                
+                continue;
+                
+            }
             
             Integer nuevoNodoValor = getCoste(datosPrecalculados, nuevoNodoMapaAgenteTarea);
             

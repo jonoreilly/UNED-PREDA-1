@@ -1,0 +1,9 @@
+#BlueJ class context
+comment0.target=SolucionadorVueltaAtras
+comment1.params=mapaAgenteTareaCoste
+comment1.target=java.util.List\ getSolucion(java.util.List)
+comment2.params=datosPrecalculados\ nodo
+comment2.target=Nodo\ obtenerNodoSolucion(DatosPrecalculados,\ Nodo)
+comment3.params=datosPrecalculados\ mapaAgenteTarea
+comment3.target=java.lang.Integer\ getCoste(DatosPrecalculados,\ java.util.List)
+numComments=4

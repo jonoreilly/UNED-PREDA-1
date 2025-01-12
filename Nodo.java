@@ -49,7 +49,7 @@ public class Nodo {
     
     public String toString() {
         
-        return "{ mapaAgenteTarea: " + mapaAgenteTarea + ", cota: " + cota + ", valor: " + valor + ", esSolucion: " + esSolucion + " }";
+        return "{ mapaAgenteTarea: " + mapaAgenteTarea.stream().map(t -> t + 1).toList() + ", cota: " + cota + ", valor: " + valor + ", esSolucion: " + esSolucion + " }";
         
     }
     
