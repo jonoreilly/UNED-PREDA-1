@@ -8,51 +8,11 @@ public class SolucionadorVueltaAtras {
              
         DatosPrecalculados datosPrecalculados = new DatosPrecalculados(mapaAgenteTareaCoste);
         
-        List<List<Integer>> solucionesParciales = new ArrayList<List<Integer>>();
+        Nodo nodoInicial = new Nodo(new ArrayList<Integer>(), 0, 0, false);
         
-        solucionesParciales.add(new ArrayList<Integer>());
+        Nodo solucion = obtenerNodoSolucion(datosPrecalculados, nodoInicial);
         
-        for (Integer agente : datosPrecalculados.getAgentes()) {
-            
-            List<List<Integer>> nuevasSolucionesParciales = new ArrayList<>();
-            
-            for (Integer tarea : datosPrecalculados.getTareas()) {
-                
-                for (List<Integer> solucionParcial : solucionesParciales) {
-                    
-                    if (solucionParcial.contains(tarea)) {
-                        
-                        continue;
-                        
-                    }
-                
-                    List<Integer> nuevaSolucionParcial = new ArrayList<>();
-                    
-                    nuevaSolucionParcial.addAll(solucionParcial);
-                    
-                    nuevaSolucionParcial.add(tarea);
-                    
-                    nuevasSolucionesParciales.add(nuevaSolucionParcial);
-                
-                }
-            
-            }
-            
-            solucionesParciales = nuevasSolucionesParciales;
-            
-        }
-        
-        List<Nodo> nodosSolucion = solucionesParciales.stream().map(mapaAgenteTarea -> {
-                
-                Integer valor = getCoste(datosPrecalculados, mapaAgenteTarea);
-                
-                return new Nodo(mapaAgenteTarea, valor, valor, true);
-            
-            }).toList();
-            
-        Nodo mejorSolucion = Collections.min(nodosSolucion, (a, b) -> a.getValor() - b.getValor());
-            
-        return mejorSolucion.getMapaAgenteTarea();
+        return solucion.getMapaAgenteTarea();
         
     }
     
